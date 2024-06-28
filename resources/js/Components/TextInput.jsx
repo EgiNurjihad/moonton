@@ -1,6 +1,20 @@
 import { forwardRef, useEffect, useRef } from 'react';
+import PropTypes from "prop-types";
 
-export default forwardRef(function TextInput({ type = 'text', className = '', isFocused = false, ...props }, ref) {
+const TextInput = forwardRef(function TextInput({
+    type = 'text',
+    className,
+    name,
+    value,
+    isFocused,
+    defaultValue,
+    variant = 'primary',
+    autoComplete,
+    required,
+    handleChange,
+    placeholder,
+    isError,
+}, ref) {
     const input = ref ? ref : useRef();
 
     useEffect(() => {
@@ -9,15 +23,41 @@ export default forwardRef(function TextInput({ type = 'text', className = '', is
         }
     }, []);
 
+
     return (
         <input
-            {...props}
+            // {...props}
             type={type}
+            name={name}
+            value={value}
+            defaultValue={defaultValue}
+            autoComplete={autoComplete}
             className={
-                'border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm ' +
-                className
+                `rounded-2xl bg-form-bg py-[13px] px-7 w-full input-${variant} ${className} ${isError ? 'input-error' : ''
+                }`
             }
             ref={input}
+            required={required}
+            onChange={(e) => handleChange(e)}
+            placeholder={placeholder}
         />
     );
 });
+
+TextInput.propTypes = {
+    type: PropTypes.oneOf(['text', 'email', 'password', 'number', 'file', 'url', 'date']),
+    className: PropTypes.string,
+    name: PropTypes.string,
+    value: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+    isFocused: PropTypes.bool,
+    defaultValue: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+    variant: PropTypes.oneOf(['primary', 'error', 'outline-primary']),
+    autoComplete: PropTypes.string,
+    required: PropTypes.bool,
+    handleChange: PropTypes.func,
+    placeholder: PropTypes.string,
+    isError: PropTypes.bool,
+};
+
+export default TextInput
+
